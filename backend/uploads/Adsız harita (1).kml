@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Adsız harita</name>
+	<visibility>0</visibility>
+	<gx:CascadingStyle kml:id="__managed_style_20D7702DFA3D176603DC">
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1E1C1238EC3D176603DC">
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_0969FBE0F73D176603DC">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1E1C1238EC3D176603DC</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_20D7702DFA3D176603DC</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0B0551ACF93D17386320">
+		<name>Adsız yer işareti</name>
+		<LookAt>
+			<longitude>39.60815374432634</longitude>
+			<latitude>41.01043849135921</latitude>
+			<altitude>35.21437149696437</altitude>
+			<heading>-80.10930289929837</heading>
+			<tilt>3.963408126247776</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>817.7417697572673</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0969FBE0F73D176603DC</styleUrl>
+		<Point>
+			<coordinates>39.60816625511642,41.0099596915278,37.90710951544449</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0AB58F03CF3D1738923C">
+		<name>Adsız yer işareti</name>
+		<LookAt>
+			<longitude>39.60816390903753</longitude>
+			<latitude>41.01077118267398</latitude>
+			<altitude>34.38333317459616</altitude>
+			<heading>-80.10942655724126</heading>
+			<tilt>3.963552491845139</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1050.019141184312</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0969FBE0F73D176603DC</styleUrl>
+		<Point>
+			<coordinates>39.60890135269785,41.00920368802478,42.25234830906557</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="095B585A733D1738B418">
+		<name>başlangıç</name>
+		<LookAt>
+			<longitude>39.60816390903753</longitude>
+			<latitude>41.01077118267398</latitude>
+			<altitude>34.38333317459616</altitude>
+			<heading>-80.10942655724126</heading>
+			<tilt>3.963552491845139</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1050.019141184312</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_0969FBE0F73D176603DC</styleUrl>
+		<Point>
+			<coordinates>39.60999224611479,41.01059245256848,24.66409292356839</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

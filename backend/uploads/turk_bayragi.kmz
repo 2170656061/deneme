@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Türk Bayrağı İkonlu KMZ</name>
+
+    <!-- Alan Stili -->
+    <Style id="areaStyle">
+      <LineStyle>
+        <color>ff0000ff</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+
+    <!-- Türk Bayrağı İkon Stili -->
+    <Style id="turkishFlagStyle">
+      <IconStyle>
+        <scale>1.2</scale>
+        <Icon>
+          <href>turkey_flag.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.0</scale>
+      </LabelStyle>
+    </Style>
+
+    <!-- Alan -->
+    <Placemark>
+      <name>Test Alanı</name>
+      <styleUrl>#areaStyle</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              39.7200,41.0000,0
+              39.7400,41.0000,0
+              39.7400,41.0200,0
+              39.7200,41.0200,0
+              39.7200,41.0000,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+
+    <!-- Türk Bayrağı Noktası -->
+    <Placemark>
+      <name>Türkiye Noktası</name>
+      <styleUrl>#turkishFlagStyle</styleUrl>
+      <Point>
+        <coordinates>39.7300,41.0100,0</coordinates>
+      </Point>
+    </Placemark>
+
+  </Document>
+</kml>
