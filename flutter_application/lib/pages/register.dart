@@ -20,7 +20,6 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
-  String _selectedRole = 'runner';
 
   @override
   void dispose() {
@@ -38,11 +37,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       final authProvider = context.read<AuthProvider>();
+      // Role is always 'admin' — set by the backend regardless
       await authProvider.register(
         _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text,
-        _selectedRole,
+        'admin',
       );
 
       if (mounted) {
@@ -52,22 +52,21 @@ class _RegisterPageState extends State<RegisterPage> {
             backgroundColor: Colors.green,
           ),
         );
-        // Navigate to home page
         widget.onNavigate?.call(0);
       }
     } catch (e) {
       if (mounted) {
+        // Show user-friendly error, strip "Exception:" prefix
+        final msg = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Kayıt başarısız: ${e.toString()}'),
+            content: Text('Kayıt başarısız: $msg'),
             backgroundColor: Colors.red,
           ),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -90,15 +89,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Logo/Icon
                       const Icon(
                         Icons.person_add_outlined,
                         size: 80,
                         color: Colors.blue,
                       ),
                       const SizedBox(height: 24),
-                      
-                      // Title
                       const Text(
                         'Hesap Oluştur',
                         style: TextStyle(
@@ -110,14 +106,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 8),
                       const Text(
                         'SahaTakip\'e katılın',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 32),
 
-                      // Username field
+                      // Username
                       TextFormField(
                         controller: _usernameController,
                         decoration: const InputDecoration(
@@ -137,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Email field
+                      // Email
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -158,33 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Role selector
-                      DropdownButtonFormField<String>(
-                        value: _selectedRole,
-                        decoration: const InputDecoration(
-                          labelText: 'Rol',
-                          prefixIcon: Icon(Icons.badge_outlined),
-                          border: OutlineInputBorder(),
-                        ),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'runner',
-                            child: Text('Koşucu'),
-                          ),
-                          DropdownMenuItem(
-                            value: 'admin',
-                            child: Text('Admin'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedRole = value ?? 'runner';
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password field
+                      // Password
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
@@ -198,26 +165,20 @@ class _RegisterPageState extends State<RegisterPage> {
                                   : Icons.visibility_off_outlined,
                             ),
                             onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
+                              setState(() => _obscurePassword = !_obscurePassword);
                             },
                           ),
                           border: const OutlineInputBorder(),
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Şifre gerekli';
-                          }
-                          if (value.length < 6) {
-                            return 'Şifre en az 6 karakter olmalı';
-                          }
+                          if (value == null || value.isEmpty) return 'Şifre gerekli';
+                          if (value.length < 6) return 'Şifre en az 6 karakter olmalı';
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
 
-                      // Confirm password field
+                      // Confirm Password
                       TextFormField(
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirmPassword,
@@ -231,9 +192,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   : Icons.visibility_off_outlined,
                             ),
                             onPressed: () {
-                              setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
-                              });
+                              setState(() =>
+                                  _obscureConfirmPassword = !_obscureConfirmPassword);
                             },
                           ),
                           border: const OutlineInputBorder(),
@@ -250,7 +210,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Register button
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -274,7 +233,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Login link
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

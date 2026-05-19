@@ -54,13 +54,18 @@ class _DosyaYukleState extends State<DosyaYukle> {
     setState(() => _isUploading = true);
 
     try {
+      final token = context.read<AuthProvider>().token;
       late Map<String, dynamic> response;
       if (kIsWeb) {
         // Upload from bytes on web
-        response = await ApiService.uploadKMLFromBytes(fileName, fileBytes!);
+        response = await ApiService.uploadKMLFromBytes(
+          fileName,
+          fileBytes!,
+          token: token,
+        );
       } else {
         // Upload from file path on mobile
-        response = await ApiService.uploadKML(filePath!);
+        response = await ApiService.uploadKML(filePath!, token: token);
       }
       
       if (mounted) {

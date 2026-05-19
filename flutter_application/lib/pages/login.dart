@@ -44,22 +44,26 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.green,
           ),
         );
-        // Navigate to home page
         widget.onNavigate?.call(0);
       }
     } catch (e) {
       if (mounted) {
+        // Strip the "Exception:" prefix for cleaner display
+        String msg = e.toString().replaceFirst('Exception: ', '');
+        // Catch common raw HTTP error payloads like {"detail":"..."}
+        if (msg.contains('"detail"')) {
+          final match = RegExp(r'"detail"\s*:\s*"([^"]+)"').firstMatch(msg);
+          if (match != null) msg = match.group(1)!;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Giriş başarısız: ${e.toString()}'),
+            content: Text('Giriş başarısız: $msg'),
             backgroundColor: Colors.red,
           ),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -82,15 +86,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Logo/Icon
                       const Icon(
                         Icons.lock_outline,
                         size: 80,
                         color: Colors.blue,
                       ),
                       const SizedBox(height: 24),
-                      
-                      // Title
                       const Text(
                         'SahaTakip',
                         style: TextStyle(
@@ -102,16 +103,13 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 8),
                       const Text(
                         'Hesabınıza giriş yapın',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       const SizedBox(height: 32),
 
-                      // Username field
                       TextFormField(
                         controller: _usernameController,
+                        textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
                           labelText: 'Kullanıcı Adı',
                           prefixIcon: Icon(Icons.person_outline),
@@ -126,10 +124,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Password field
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _isLoading ? null : _login(),
                         decoration: InputDecoration(
                           labelText: 'Şifre',
                           prefixIcon: const Icon(Icons.lock_outline),
@@ -140,9 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                                   : Icons.visibility_off_outlined,
                             ),
                             onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
+                              setState(() => _obscurePassword = !_obscurePassword);
                             },
                           ),
                           border: const OutlineInputBorder(),
@@ -156,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Login button
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -180,9 +176,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Register link
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           const Text('Hesabınız yok mu?'),
                           TextButton(

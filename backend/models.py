@@ -4,7 +4,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from passlib.context import CryptContext
 
 # Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 
 # 0. User (Admin and Runners)
@@ -20,7 +20,12 @@ class User(SQLModel, table=True):
 
     def verify_password(self, password: str) -> bool:
         """Verify a plain password against the hash"""
-        return pwd_context.verify(password, self.password_hash)
+        if not self.password_hash:
+            return False
+        try:
+            return pwd_context.verify(password, self.password_hash)
+        except Exception:
+            return False
 
     @staticmethod
     def hash_password(password: str) -> str:

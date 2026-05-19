@@ -239,6 +239,7 @@ class _CoursesTab extends StatelessWidget {
               if (!formKey.currentState!.validate()) return;
               Navigator.of(ctx).pop();
               try {
+                final token = context.read<AuthProvider>().token;
                 await ApiService.createCourse(
                   nameCtrl.text.trim(),
                   description: descCtrl.text.trim().isEmpty
@@ -247,6 +248,7 @@ class _CoursesTab extends StatelessWidget {
                   distanceKm: distCtrl.text.trim().isEmpty
                       ? null
                       : double.tryParse(distCtrl.text.trim()),
+                  token: token,
                 );
                 if (context.mounted) {
                   context.read<CourseProvider>().loadCourses();
@@ -297,7 +299,8 @@ class _CoursesTab extends StatelessWidget {
 
     if (confirmed == true && context.mounted) {
       try {
-        await ApiService.deleteCourse(courseId);
+        final token = context.read<AuthProvider>().token;
+        await ApiService.deleteCourse(courseId, token: token);
         if (context.mounted) {
           context.read<CourseProvider>().loadCourses();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -496,11 +499,13 @@ class _CheckpointBodyState extends State<_CheckpointBody> {
               if (!formKey.currentState!.validate()) return;
               Navigator.of(ctx).pop();
               try {
+                final token = context.read<AuthProvider>().token;
                 await ApiService.createCheckpoint(
                   courseId,
                   nextOrder,
                   double.parse(latCtrl.text.trim()),
                   double.parse(lonCtrl.text.trim()),
+                  token: token,
                 );
                 if (context.mounted) {
                   // Force reload checkpoints for this course
@@ -725,6 +730,7 @@ class _UsersTab extends StatelessWidget {
   Future<void> _showCreateUserDialog(BuildContext context) async {
     final usernameCtrl = TextEditingController();
     final emailCtrl = TextEditingController();
+    final passwordCtrl = TextEditingController();
     String selectedRole = 'runner';
     final formKey = GlobalKey<FormState>();
 
@@ -762,6 +768,20 @@ class _UsersTab extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 12),
+                TextFormField(
+                  controller: passwordCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Şifre *',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'Şifre gerekli';
+                    if (v.length < 6) return 'Şifre en az 6 karakter olmalı';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: selectedRole,
                   decoration: const InputDecoration(
@@ -789,10 +809,13 @@ class _UsersTab extends StatelessWidget {
                 if (!formKey.currentState!.validate()) return;
                 Navigator.of(ctx).pop();
                 try {
+                  final token = context.read<AuthProvider>().token;
                   await context.read<UserProvider>().createUser(
                         usernameCtrl.text.trim(),
                         emailCtrl.text.trim(),
+                        passwordCtrl.text,
                         selectedRole,
+                        token: token,
                       );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(

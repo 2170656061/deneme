@@ -15,7 +15,10 @@ class AuthProvider extends ChangeNotifier {
   String? get error => _error;
   bool get isAuthenticated => _token != null && _currentUser != null;
 
-  // Initialize - check for existing token
+  // All signed-in users are admin by the current paradigm,
+  // but we still check the role field for future flexibility.
+  bool get isAdmin => _currentUser?['role'] == 'admin';
+
   Future<void> init() async {
     _isLoading = true;
     notifyListeners();
@@ -23,7 +26,6 @@ class AuthProvider extends ChangeNotifier {
     try {
       _token = await _storage.read(key: 'auth_token');
       if (_token != null) {
-        // Verify token and get user info
         await _loadCurrentUser();
       }
     } catch (e) {
@@ -38,12 +40,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _loadCurrentUser() async {
     if (_token == null) return;
-    
     try {
-      final userData = await ApiService.getMe(_token!);
-      _currentUser = userData;
+      _currentUser = await ApiService.getMe(_token!);
     } catch (e) {
-      // Token might be expired
       _token = null;
       _currentUser = null;
       await _storage.delete(key: 'auth_token');
@@ -60,10 +59,7 @@ class AuthProvider extends ChangeNotifier {
       final response = await ApiService.login(username, password);
       _token = response['access_token'];
       _currentUser = response['user'];
-      
-      // Save token to secure storage
       await _storage.write(key: 'auth_token', value: _token);
-      
       _error = null;
     } catch (e) {
       _error = e.toString();
@@ -76,19 +72,18 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> register(String username, String email, String password, String role) async {
+  Future<void> register(
+      String username, String email, String password, String role) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final response = await ApiService.register(username, email, password, role);
+      final response =
+          await ApiService.register(username, email, password, role);
       _token = response['access_token'];
       _currentUser = response['user'];
-      
-      // Save token to secure storage
       await _storage.write(key: 'auth_token', value: _token);
-      
       _error = null;
     } catch (e) {
       _error = e.toString();
@@ -107,14 +102,10 @@ class AuthProvider extends ChangeNotifier {
     await _storage.delete(key: 'auth_token');
     notifyListeners();
   }
-
-  // Check if user has admin role
-  bool get isAdmin => _currentUser?['role'] == 'admin';
 }
 
 class CourseProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _courses = [];
-  // Fixed typo: was _checkpointsByCoarse
   final Map<int, List<Map<String, dynamic>>> _checkpointsByCourse = {};
   bool _isLoading = false;
   String? _error;
@@ -189,13 +180,14 @@ class UserProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> loadUsers() async {
+  /// Load all users. Requires an admin token.
+  Future<void> loadUsers({String? token}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _users = await ApiService.getUsers();
+      _users = await ApiService.getUsers(token: token);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -204,13 +196,15 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createUser(String username, String email, String role) async {
+  Future<void> createUser(String username, String email, String password, String role,
+      {String? token}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      final user = await ApiService.createUser(username, email, role);
+      final user = await ApiService.createUser(username, email, password, role,
+          token: token);
       _users.add(user);
       _error = null;
     } catch (e) {
@@ -255,9 +249,10 @@ class ResultProvider extends ChangeNotifier {
     int userId,
     int courseId,
     double totalTimeSeconds,
+    {String? token}
   ) async {
     try {
-      await ApiService.syncResult(userId, courseId, totalTimeSeconds);
+      await ApiService.syncResult(userId, courseId, totalTimeSeconds, token: token);
       await loadResults();
     } catch (e) {
       _error = e.toString();
